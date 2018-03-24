@@ -1,0 +1,6 @@
+
+*.db
+*.opendb
+x64/
+.vs/
+ATask/x64
