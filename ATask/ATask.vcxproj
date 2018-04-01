@@ -140,6 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Thread\QueueThreadPool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HAL\WindowsCriticalSection.h" />
+    <ClInclude Include="TaskGraph\ITaskGraph.h" />
+    <ClInclude Include="TaskGraph\TaskGraphTypes.h" />
+    <ClInclude Include="Thread\QueuedThreadPool.h" />
+    <ClInclude Include="Thread\ThreadUtility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

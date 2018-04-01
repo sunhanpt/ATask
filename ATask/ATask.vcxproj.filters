@@ -13,10 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="TaskGraph">
+      <UniqueIdentifier>{d287700e-1b80-44a3-9a63-2a31ade98215}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{af4a4db5-a203-4730-ae9e-05825451b851}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HAL">
+      <UniqueIdentifier>{69a16c57-9d67-4ab9-925a-d1efa8f01659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HAL\Windows">
+      <UniqueIdentifier>{f83bcdd8-a43f-4140-9fcf-bc6ece409263}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Thread\QueueThreadPool.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TaskGraph\ITaskGraph.h">
+      <Filter>TaskGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskGraph\TaskGraphTypes.h">
+      <Filter>TaskGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\QueuedThreadPool.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\ThreadUtility.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsCriticalSection.h">
+      <Filter>HAL\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
