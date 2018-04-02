@@ -50,5 +50,14 @@
     <ClInclude Include="HAL\WindowsCriticalSection.h">
       <Filter>HAL\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="HAL\HAL.h">
+      <Filter>HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\FScopeLock.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\Runnable.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
