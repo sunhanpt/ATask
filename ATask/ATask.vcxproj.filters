@@ -33,6 +33,12 @@
     <ClCompile Include="Thread\QueueThreadPool.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="Thread\ThreadBase.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="HAL\WindowsPlatformProcess.cpp">
+      <Filter>HAL\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TaskGraph\ITaskGraph.h">
@@ -58,6 +64,24 @@
     </ClInclude>
     <ClInclude Include="Thread\Runnable.h">
       <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\RunnableThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\ThreadManager.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsCoreType.h">
+      <Filter>HAL\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsPlatformTls.h">
+      <Filter>HAL\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsRunableThread.h">
+      <Filter>HAL\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsPlatformProcess.h">
+      <Filter>HAL\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
