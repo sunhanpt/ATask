@@ -145,12 +145,15 @@
     <ClCompile Include="Thread\ThreadBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HAL\Event.h" />
     <ClInclude Include="HAL\HAL.h" />
     <ClInclude Include="HAL\WindowsCoreType.h" />
     <ClInclude Include="HAL\WindowsCriticalSection.h" />
     <ClInclude Include="HAL\WindowsPlatformProcess.h" />
     <ClInclude Include="HAL\WindowsPlatformTls.h" />
     <ClInclude Include="HAL\WindowsRunableThread.h" />
+    <ClInclude Include="HAL\WindowsEvent.h" />
+    <ClInclude Include="Misc\EventPool.h" />
     <ClInclude Include="TaskGraph\ITaskGraph.h" />
     <ClInclude Include="TaskGraph\TaskGraphTypes.h" />
     <ClInclude Include="Thread\FScopeLock.h" />

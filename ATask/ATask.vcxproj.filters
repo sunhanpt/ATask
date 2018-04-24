@@ -25,6 +25,9 @@
     <Filter Include="HAL\Windows">
       <UniqueIdentifier>{f83bcdd8-a43f-4140-9fcf-bc6ece409263}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{51740049-e7bd-4017-a28a-712b85aad9f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -82,6 +85,15 @@
     </ClInclude>
     <ClInclude Include="HAL\WindowsPlatformProcess.h">
       <Filter>HAL\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\Event.h">
+      <Filter>HAL</Filter>
+    </ClInclude>
+    <ClInclude Include="HAL\WindowsEvent.h">
+      <Filter>HAL\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc\EventPool.h">
+      <Filter>Misc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -62,3 +62,6 @@ FThreadManager& FThreadManager::Get()
 	static FThreadManager Singleton;
 	return Singleton;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
