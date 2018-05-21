@@ -4,13 +4,13 @@
 *  pengtong.pt 2018-5-21
 */
 /************************************************************************/
-#include <unordered_map>
+#include <map>
 #include "CriticalSection.h"
 
 class FRunnableThread;
 class FThreadManager
 {
-	std::unordered_map<int, FRunnableThread*> Threads;
+	std::map<int, FRunnableThread*> Threads;
 	FCriticalSection ThreadsCritical;
 
 public:
@@ -18,7 +18,7 @@ public:
 	void RemoveThread(FRunnableThread* Thread);
 	void RemoveThread(int ThreadId);
 
-	const std::string GetThreadName(int ThreadId);
+	const std::string& GetThreadName(int ThreadId);
 
 	static FThreadManager& Get();
 };

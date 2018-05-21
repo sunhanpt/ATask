@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="private\ThreadManager.cpp">
+      <Filter>private\Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="public\CriticalSection.h">
@@ -29,6 +32,9 @@
       <Filter>public\Thread</Filter>
     </ClInclude>
     <ClInclude Include="public\ThreadPool.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\ScopeLock.h">
       <Filter>public\Thread</Filter>
     </ClInclude>
   </ItemGroup>
