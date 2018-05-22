@@ -20,13 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="private\FEventWin.cpp" />
+    <ClCompile Include="private\FQueuedThreadPool.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="private\FEventWin.h" />
+    <ClInclude Include="private\QueuedThread.h" />
     <ClInclude Include="public\CriticalSection.h" />
+    <ClInclude Include="public\Event.h" />
+    <ClInclude Include="public\IQueuedWork.h" />
+    <ClInclude Include="public\RunnableThread.h" />
     <ClInclude Include="public\ScopeLock.h" />
     <ClInclude Include="public\ThreadManager.h" />
-    <ClInclude Include="public\ThreadPool.h" />
+    <ClInclude Include="public\QueuedThreadPool.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -23,6 +23,12 @@
     <ClCompile Include="private\ThreadManager.cpp">
       <Filter>private\Thread</Filter>
     </ClCompile>
+    <ClCompile Include="private\FQueuedThreadPool.cpp">
+      <Filter>private\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="private\FEventWin.cpp">
+      <Filter>private\Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="public\CriticalSection.h">
@@ -31,11 +37,26 @@
     <ClInclude Include="public\ThreadManager.h">
       <Filter>public\Thread</Filter>
     </ClInclude>
-    <ClInclude Include="public\ThreadPool.h">
-      <Filter>public\Thread</Filter>
-    </ClInclude>
     <ClInclude Include="public\ScopeLock.h">
       <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\RunnableThread.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="private\QueuedThread.h">
+      <Filter>private\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\QueuedThreadPool.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\IQueuedWork.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\Event.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="private\FEventWin.h">
+      <Filter>private\Thread</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
