@@ -58,5 +58,11 @@
     <ClInclude Include="private\FEventWin.h">
       <Filter>private\Thread</Filter>
     </ClInclude>
+    <ClInclude Include="public\EventPool.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\ThreadSafeQueue.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
