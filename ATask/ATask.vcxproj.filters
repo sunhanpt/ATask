@@ -17,6 +17,15 @@
     <Filter Include="private\Thread">
       <UniqueIdentifier>{c2c1a701-2f63-4755-9bd3-a264f7d3eaea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="public\TaskGraph">
+      <UniqueIdentifier>{436bc179-0f24-4f09-9cab-ebedef31c9e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\TaskGraph">
+      <UniqueIdentifier>{2d7f135a-cfa9-4717-aef5-25892759e859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\common">
+      <UniqueIdentifier>{56acdec6-0fa5-4590-a7ec-44c9626a578f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -63,6 +72,12 @@
     </ClInclude>
     <ClInclude Include="public\ThreadSafeQueue.h">
       <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\TaskGraphInterface.h">
+      <Filter>public\TaskGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="public\ATypes.h">
+      <Filter>public\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
