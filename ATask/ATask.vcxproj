@@ -23,11 +23,15 @@
     <ClCompile Include="private\FEventWin.cpp" />
     <ClCompile Include="private\FQueuedThreadPool.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />
+    <ClCompile Include="private\WindowsPlatformProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="private\FEventWin.h" />
     <ClInclude Include="private\QueuedThread.h" />
-    <ClInclude Include="public\ATypes.h" />
+    <ClInclude Include="public\AlignmentTemplates.h" />
+    <ClInclude Include="public\LockFreeList.h" />
+    <ClInclude Include="public\WindowsPlatformProcess.h" />
+    <ClInclude Include="public\Types.h" />
     <ClInclude Include="public\CriticalSection.h" />
     <ClInclude Include="public\Event.h" />
     <ClInclude Include="public\EventPool.h" />
@@ -35,9 +39,13 @@
     <ClInclude Include="public\RunnableThread.h" />
     <ClInclude Include="public\ScopeLock.h" />
     <ClInclude Include="public\TaskGraphInterface.h" />
+    <ClInclude Include="public\Template.h" />
     <ClInclude Include="public\ThreadManager.h" />
     <ClInclude Include="public\QueuedThreadPool.h" />
+    <ClInclude Include="public\ThreadSafeCounter.h" />
     <ClInclude Include="public\ThreadSafeQueue.h" />
+    <ClInclude Include="public\WindowsPlatform.h" />
+    <ClInclude Include="public\WindowsPlatformAtomics.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

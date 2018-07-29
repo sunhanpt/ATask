@@ -1,9 +1,11 @@
 #pragma once
-#include "ATypes.h"
+#include "Types.h"
 #include <cassert>
 #include <memory>
 #include <vector>
 #include <functional>
+#include "WindowsPlatform.h"
+#include "ThreadSafeCounter.h"
 
 namespace ENamedThreads
 {
@@ -183,4 +185,70 @@ public:
 	}
 
 	virtual void AddShutdownCallback(std::function<void()>& Callback) = 0;
+};
+
+
+/************************************************************************/
+/* Base Class for all tasks.
+*/
+/************************************************************************/
+class FBaseGraphTask
+{
+public:
+	FBaseGraphTask(int32 InNumberOfPrerequistitesOutstanding)
+		: ThreadToExecuteOn(ENamedThreads::AnyThread)
+		, NumberOfPrerequistitiesOutstanding(InNumberOfPrerequistitesOutstanding + 1){}
+
+	void SetThreadToExecuteOn(ENamedThreads::Type InThreadToExecuteOn)
+	{
+		ThreadToExecuteOn = InThreadToExecuteOn;
+	}
+
+	void PrerequisitesComplete(ENamedThreads::Type CurrentThread, int32 NumAlreadyFinishedPrequistes, bool bUnlock = true)
+	{
+		int32 NumToSub = NumAlreadyFinishedPrequistes + (bUnlock ? 1 : 0);
+		if (NumberOfPrerequistitiesOutstanding.Subtract(NumToSub) == NumToSub)
+		{
+			QueueTask(CurrentThread);
+		}
+	}
+
+	virtual ~FBaseGraphTask() {}
+
+	void ConditionalQueueTask(ENamedThreads::Type CurrentThread)
+	{
+		if (NumberOfPrerequistitiesOutstanding.Decrement() == 0)
+		{
+			QueueTask(CurrentThread);
+		}
+	}
+
+private:
+	friend class FNamedTaskThread;
+	friend class FTaskThreadBase;
+	friend class FTaskThreadAndyThread;
+	friend class FGraphEvent;
+	friend class FTaskGraphImplementation;
+
+	virtual void ExecuteTask(std::vector<FBaseGraphTask*>& NewTasks, ENamedThreads::Type CurrentThread) = 0;
+
+	__forceinline void Execute(std::vector<FBaseGraphTask*>& NewTasks, ENamedThreads::Type CurrentThread)
+	{
+		ExecuteTask(NewTasks, CurrentThread);
+	}
+
+	void QueueTask(ENamedThreads::Type CurrentThreadIfKnown)
+	{
+		FTaskGraphInterface::Get().QueueTask(this, ThreadToExecuteOn, CurrentThreadIfKnown);
+	}
+
+	ENamedThreads::Type			ThreadToExecuteOn;
+	FThreadSafeCounter			NumberOfPrerequistitiesOutstanding;
+};
+
+// FGraphEvent是一堆子tasks等待的一个事件
+// TODO: 2018/7/29
+class FGraphEvent
+{
+
 };
