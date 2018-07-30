@@ -32,7 +32,7 @@ FQueuedThreadPool* FQueuedThreadPool::Allocate()
 
 bool FQueuedThreadPoolBase::Create(int InNunQueuedThread, int StackSize, EThreadPriority ThreadPriority /* = TPri_Normal */)
 {
-
+	return true;
 }
 
 void FQueuedThreadPoolBase::Destory()
@@ -47,16 +47,16 @@ void FQueuedThreadPoolBase::AddQueuedWork(IQueuedWork* InQueuedWork)
 
 bool FQueuedThreadPoolBase::RetractQueuedWork(IQueuedWork* InQueuedWork)
 {
-
+	return true;
 }
 
 IQueuedWork* FQueuedThreadPoolBase::ReturnToPoolOrGetNextJob(FQueuedThread* InQueuedThread)
 {
-
+	return nullptr;
 }
 
 int FQueuedThreadPoolBase::GetNumThreads()
 {
-
+	return 0;
 }
 

@@ -6,6 +6,7 @@
 #include <functional>
 #include "WindowsPlatform.h"
 #include "ThreadSafeCounter.h"
+#include "LockFreeList.h"
 
 namespace ENamedThreads
 {
@@ -250,5 +251,30 @@ private:
 // TODO: 2018/7/29
 class FGraphEvent
 {
+public:
+	static FGraphEventRef	CreateGraphEvent();
+	static FGraphEvent*		CreateGraphEnventWithInlineStorage();
 
+	// Attempts to a new subsequent task. If this event has already fired, false is returned and action must be taken to ensure that 
+	// the task will still fire even though this event cannot be a prerequisite (because it is already finished).
+	bool AddSubsequent(class FBaseGraphTask* Task)
+	{
+		return SubsequentList.PushIfNotClosed(Task);
+	}
+
+	// Verification function to ensure that nobody was tried to add WaitUntil's outside of the context of execution
+	void CheckDontCompleteUntilIsEmpty()
+	{
+		bool isEmpty = !EventsToWaitFor.size();
+		assert(isEmpty);
+	}
+
+private:
+	/** Threadsafe list of subsequents for the event **/
+	TClosableLockFreePointerListUnorderedSingleConsumer<FBaseGraphTask, 0>	SubsequentList;
+	/** List of events to wait for until firing. This is not thread safe as it is only legal to fill it in within the context of an executing task. **/
+	FGraphEventArray														EventsToWaitFor;
+	/** Number of outstanding references to this graph event **/
+	FThreadSafeCounter														ReferenceCount;
+	ENamedThreads::Type														ThreadToDoGatherOn;
 };
