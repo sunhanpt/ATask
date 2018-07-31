@@ -248,7 +248,7 @@ private:
 };
 
 // FGraphEvent是一堆子tasks等待的一个事件
-// TODO: 2018/7/29
+// TODO: 2018/7/31 添加小存储Task的统一内存分配。
 class FGraphEvent
 {
 public:
@@ -269,6 +269,63 @@ public:
 		assert(isEmpty);
 	}
 
+	// Delay the firing of this event until the given event fires.
+	void DontCompleteUntil(FGraphEventRef EventToWaitFor)
+	{
+		assert(!IsComplete());
+		EventsToWaitFor.push_back(EventToWaitFor);
+	}
+
+	// Sets the thread that you want to execute the null gather task on. This is useful if the thing waiting for this chain to complete is a single, named thread.
+	// 应该是在null task时，作为一个收集等待的task。在named thread中需要等待这个task执行完。会放在named thread中。
+	void SetGatherThreadForDontCompleteUntil(ENamedThreads::Type InThreadToDoGatherOn)
+	{
+		assert(!IsComplete());
+		ThreadToDoGatherOn = InThreadToDoGatherOn;
+	}
+
+	/**
+	*	"Complete" the event. This grabs the list of subsequents and atomically closes it. Then for each subsequent it reduces the number of prerequisites outstanding and if that drops to zero, the task is queued.
+	*	@param CurrentThreadIfKnown if the current thread is known, provide it here. Otherwise it will be determined via TLS if any task ends up being queued.
+	**/
+	void DispatchSubsequents(std::vector<FBaseGraphTask*>& NewTasks, ENamedThreads::Type CurrentThreadIfKnown = ENamedThreads::AnyThread);
+
+	bool IsComplete() const
+	{
+		return SubsequentList.IsClosed();
+	}
+
+private:
+	friend class std::shared_ptr<FGraphEvent>;
+	friend class TLockFreeClassAllocator_TLSCache<FGraphEvent, PLATFORM_CACHE_LINE_SIZE>;
+
+	// Internal function to call the destructor and recycle a graph event
+	static void Recycle(FGraphEvent* ToRecycle);
+
+	friend struct FGraphEventAndSmallTaskStorage;
+	FGraphEvent(bool bInInline = false)
+		: ThreadToDoGatherOn(ENamedThreads::AnyHiPriThreadHiPriTask){}
+
+	~FGraphEvent();
+
+public:
+	uint32 AddRef()
+	{
+		int32 RefCount = ReferenceCount.Increment();
+		assert(RefCount > 0);
+		return RefCount;
+	}
+
+	uint32 Release()
+	{
+		int32 RefCount = ReferenceCount.Decrement();
+		assert(RefCount >= 0);
+		if (RefCount == 0)
+		{
+			Recycle(this);
+		}
+		return RefCount;
+	}
 private:
 	/** Threadsafe list of subsequents for the event **/
 	TClosableLockFreePointerListUnorderedSingleConsumer<FBaseGraphTask, 0>	SubsequentList;
