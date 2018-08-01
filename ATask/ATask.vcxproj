@@ -30,6 +30,7 @@
     <ClInclude Include="private\QueuedThread.h" />
     <ClInclude Include="public\AlignmentTemplates.h" />
     <ClInclude Include="public\LockFreeList.h" />
+    <ClInclude Include="public\TypeCompatibleBytes.h" />
     <ClInclude Include="public\WindowsPlatformProcess.h" />
     <ClInclude Include="public\Types.h" />
     <ClInclude Include="public\CriticalSection.h" />

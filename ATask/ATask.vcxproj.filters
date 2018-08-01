@@ -115,5 +115,8 @@
     <ClInclude Include="public\WindowsPlatformProcess.h">
       <Filter>public\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="public\TypeCompatibleBytes.h">
+      <Filter>public\Templates</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

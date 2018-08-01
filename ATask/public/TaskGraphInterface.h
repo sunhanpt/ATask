@@ -195,7 +195,7 @@ public:
 /************************************************************************/
 class FBaseGraphTask
 {
-public:
+protected:
 	FBaseGraphTask(int32 InNumberOfPrerequistitesOutstanding)
 		: ThreadToExecuteOn(ENamedThreads::AnyThread)
 		, NumberOfPrerequistitiesOutstanding(InNumberOfPrerequistitesOutstanding + 1){}
@@ -297,7 +297,6 @@ public:
 
 private:
 	friend class std::shared_ptr<FGraphEvent>;
-	friend class TLockFreeClassAllocator_TLSCache<FGraphEvent, PLATFORM_CACHE_LINE_SIZE>;
 
 	// Internal function to call the destructor and recycle a graph event
 	static void Recycle(FGraphEvent* ToRecycle);
@@ -334,4 +333,80 @@ private:
 	/** Number of outstanding references to this graph event **/
 	FThreadSafeCounter														ReferenceCount;
 	ENamedThreads::Type														ThreadToDoGatherOn;
+};
+
+/**
+*	TGraphTask
+*	Embeds a user defined task, as exemplified above, for doing the work and provides the functionality for setting up and handling prerequisites and subsequents
+**/
+// 包裹用户创建的TTask的模板类。继承自FBaseGraphTask基类，引擎中可以统一使用接口管理。
+template<typename TTask>
+class TGraphTask : public FBaseGraphTask
+{
+public:
+	// TTask的构造器.(使用一个FConstructor是为使用TGraphTask中的storage吗？？？)
+	// 使用构造器就是为了这个变长模板函数。可以实现创建不同参数的TTask。如果没有FConstructor，则需要在TGraspTask中添加
+	// 静态成员函数。静态成员函数不知是不是可以变长模板函数，应该是可以。但是类模板加上成员函数模板，参数不是一套，有点乱。
+	class FConstructor
+	{
+	public:
+		template<typename...T>
+		FGraphEventRef ConstructAndDispatchWhenReady(T&&... Args)
+		{
+			new ((void*)&Owner->TaskStorage) TTask(std::forward<T>(Args)...);
+			Owner->Setup(Prerequisites, CurrentThreadIfKnown);
+		}
+
+		template<typename... T>
+		TGraphTask* ConstructAndHold(T&&... Args)
+		{
+			new ((void *)&Owner->TaskStorage) TTask(std::forward()<T>(Args)...);
+			return Owner->Hold(Prerequisites, CurrentThreadIfKnown);
+		}
+	private:
+		friend class		TGraphTask;
+		TGraphTask*			Owner;
+
+		const FGraphEventArray*			Prerequisites;
+		ENamedThreads::Type				CurrentThreadIfKnown;
+
+		FConstructor(TGraphTask* InOwner, const FGraphEventArray* InPreQuisties, ENamedThreads::Type InCurrentThreadIfKnown)
+			: Owner(InOwner)
+			, Prerequisites(InPreQuisties)
+			, CurrentThreadIfKnown(InCurrentThreadIfKnown)
+		{}
+		FConstructor(const FConstructor& Other) = delete;
+		void operator=(const FConstructor& Other) = delete;
+	};
+
+	static FConstructor CreateTask(const FGraphEventArray* Prerequisties = nullptr, ENamedThreads::Type CurrentThreadIfKnown = ENamedThreads::AnyThread)
+	{
+		int NumPrereq = Prerequisties ? Prerequisties->size() : 0;
+		// TODO: 当task的尺寸比较小时，可以使用统一内存分配，防止存储锁片。
+		return FConstructor(new TGraphTask(TTask::GetSubsequentsMode() == ESubsequentsMode::FireAndForget ? NULL : FGraphEvent::CreateGraphEvent(), NumPrereq), Prerequisties, CurrentThreadIfKnown);
+	}
+
+private:
+	friend class FConstructor;
+	friend class FGraphEvent;
+
+
+	TGraphTask(FGraphEventRef InSubsequents, int32 NumberOfPrerequistiesOutstanding)
+		:FBaseGraphTask(NumberOfPrerequistiesOutstanding)
+		,TaskConstructed(false)
+	{
+		Subsequents.swap(InSubsequents);
+	}
+
+	virtual ~TGraphTask() final override
+	{
+		assert(!TaskConstructed);
+	}
+
+	/** An aligned bit of storage to hold the embedded task **/
+	TAlignedBytes<sizeof(TTask), alignof(TTask)> TaskStorage;
+	/** Used to sanity check the state of the object **/
+	bool						TaskConstructed;
+	/** A reference counted pointer to the completion event which lists the tasks that have me as a prerequisite. **/
+	FGraphEventRef				Subsequents;
 };
