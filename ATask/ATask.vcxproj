@@ -22,6 +22,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\FEventWin.cpp" />
     <ClCompile Include="private\FQueuedThreadPool.cpp" />
+    <ClCompile Include="private\ThreadCoreGlobals.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />
     <ClCompile Include="private\WindowsPlatformProcess.cpp" />
   </ItemGroup>
@@ -29,10 +30,12 @@
     <ClInclude Include="private\FEventWin.h" />
     <ClInclude Include="private\QueuedThread.h" />
     <ClInclude Include="public\AlignmentTemplates.h" />
+    <ClInclude Include="public\LockFreeFixedSizeAllocator.h" />
     <ClInclude Include="public\LockFreeList.h" />
+    <ClInclude Include="public\ThreadCoreGlobals.h" />
     <ClInclude Include="public\TypeCompatibleBytes.h" />
     <ClInclude Include="public\WindowsPlatformProcess.h" />
-    <ClInclude Include="public\Types.h" />
+    <ClInclude Include="public\CoreTypes.h" />
     <ClInclude Include="public\CriticalSection.h" />
     <ClInclude Include="public\Event.h" />
     <ClInclude Include="public\EventPool.h" />
@@ -47,6 +50,7 @@
     <ClInclude Include="public\ThreadSafeQueue.h" />
     <ClInclude Include="public\WindowsPlatform.h" />
     <ClInclude Include="public\WindowsPlatformAtomics.h" />
+    <ClInclude Include="public\WindowsPlatformTLS.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

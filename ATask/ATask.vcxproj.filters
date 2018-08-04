@@ -26,9 +26,6 @@
     <Filter Include="public\Container">
       <UniqueIdentifier>{d675a9c2-d7ad-43e8-8de8-5f946888a9c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="public\Common">
-      <UniqueIdentifier>{56acdec6-0fa5-4590-a7ec-44c9626a578f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="public\Platform">
       <UniqueIdentifier>{4b90f17d-9436-40c0-85f1-849ac1784729}</UniqueIdentifier>
     </Filter>
@@ -37,6 +34,9 @@
     </Filter>
     <Filter Include="private\Platform">
       <UniqueIdentifier>{438a345c-7a0f-4a60-8262-e98af173fa36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\Core">
+      <UniqueIdentifier>{56acdec6-0fa5-4590-a7ec-44c9626a578f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="private\WindowsPlatformProcess.cpp">
       <Filter>private\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="private\ThreadCoreGlobals.cpp">
+      <Filter>private\Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +106,6 @@
     <ClInclude Include="public\WindowsPlatformAtomics.h">
       <Filter>public\Platform</Filter>
     </ClInclude>
-    <ClInclude Include="public\Types.h">
-      <Filter>public\Common</Filter>
-    </ClInclude>
     <ClInclude Include="public\LockFreeList.h">
       <Filter>public\Container</Filter>
     </ClInclude>
@@ -117,6 +117,18 @@
     </ClInclude>
     <ClInclude Include="public\TypeCompatibleBytes.h">
       <Filter>public\Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="public\LockFreeFixedSizeAllocator.h">
+      <Filter>public\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="public\ThreadCoreGlobals.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\WindowsPlatformTLS.h">
+      <Filter>public\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="public\CoreTypes.h">
+      <Filter>public\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
-#ifndef __ATYPES_H__
-#define __ATYPES_H__
+#ifndef __CORETYPES_H__
+#define __CORETYPES_H__
 
 using uint32		= unsigned int;
 using int32			= int;

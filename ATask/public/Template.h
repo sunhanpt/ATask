@@ -10,6 +10,6 @@ protected:
 	FNoncopyable() {};
 	~FNoncopyable() {};
 private:
-	FNoncopyable(const FNoncopyable&);
-	FNoncopyable& operator=(const FNoncopyable&);
+	FNoncopyable(const FNoncopyable&) = delete;
+	FNoncopyable& operator=(const FNoncopyable&) = delete;
 };
