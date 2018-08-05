@@ -22,6 +22,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\FEventWin.cpp" />
     <ClCompile Include="private\FQueuedThreadPool.cpp" />
+    <ClCompile Include="private\TaskGraph.cpp" />
     <ClCompile Include="private\ThreadCoreGlobals.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />
     <ClCompile Include="private\WindowsPlatformProcess.cpp" />
@@ -30,8 +31,10 @@
     <ClInclude Include="private\FEventWin.h" />
     <ClInclude Include="private\QueuedThread.h" />
     <ClInclude Include="public\AlignmentTemplates.h" />
+    <ClInclude Include="public\Runnable.h" />
     <ClInclude Include="public\LockFreeFixedSizeAllocator.h" />
     <ClInclude Include="public\LockFreeList.h" />
+    <ClInclude Include="public\SingleThreadRunnable.h" />
     <ClInclude Include="public\ThreadCoreGlobals.h" />
     <ClInclude Include="public\TypeCompatibleBytes.h" />
     <ClInclude Include="public\WindowsPlatformProcess.h" />
@@ -47,7 +50,6 @@
     <ClInclude Include="public\ThreadManager.h" />
     <ClInclude Include="public\QueuedThreadPool.h" />
     <ClInclude Include="public\ThreadSafeCounter.h" />
-    <ClInclude Include="public\ThreadSafeQueue.h" />
     <ClInclude Include="public\WindowsPlatform.h" />
     <ClInclude Include="public\WindowsPlatformAtomics.h" />
     <ClInclude Include="public\WindowsPlatformTLS.h" />

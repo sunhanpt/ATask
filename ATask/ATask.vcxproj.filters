@@ -56,6 +56,9 @@
     <ClCompile Include="private\ThreadCoreGlobals.cpp">
       <Filter>private\Thread</Filter>
     </ClCompile>
+    <ClCompile Include="private\TaskGraph.cpp">
+      <Filter>private\TaskGraph</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="public\CriticalSection.h">
@@ -86,9 +89,6 @@
       <Filter>private\Thread</Filter>
     </ClInclude>
     <ClInclude Include="public\EventPool.h">
-      <Filter>public\Thread</Filter>
-    </ClInclude>
-    <ClInclude Include="public\ThreadSafeQueue.h">
       <Filter>public\Thread</Filter>
     </ClInclude>
     <ClInclude Include="public\TaskGraphInterface.h">
@@ -129,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="public\CoreTypes.h">
       <Filter>public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="public\SingleThreadRunnable.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\Runnable.h">
+      <Filter>public\Thread</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
