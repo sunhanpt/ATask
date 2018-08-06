@@ -34,6 +34,7 @@
     <ClInclude Include="public\Runnable.h" />
     <ClInclude Include="public\LockFreeFixedSizeAllocator.h" />
     <ClInclude Include="public\LockFreeList.h" />
+    <ClInclude Include="public\SingleThreadEvent.h" />
     <ClInclude Include="public\SingleThreadRunnable.h" />
     <ClInclude Include="public\ThreadCoreGlobals.h" />
     <ClInclude Include="public\TypeCompatibleBytes.h" />

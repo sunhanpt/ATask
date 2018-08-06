@@ -20,6 +20,11 @@ public:
 		return Event != nullptr;
 	}
 
+	virtual bool IsManualReset() override
+	{
+		return ManualReset;
+	}
+
 	virtual void Trigger() override;
 	virtual void Reset() override;
 	virtual bool Wait(unsigned int WaitTime) override;

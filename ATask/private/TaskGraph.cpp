@@ -145,9 +145,51 @@ private:
 class FNamedTaskThread : public FTaskThreadBase
 {
 public:
+	// TODO: 2018/8/7
 private:
 	struct FThreadTaskQueue 
 	{
+		FStallingTaskQueue<FBaseGraphTask, PLATFORM_CACHE_LINE_SIZE, 2> StallQueue;
 
+		/** We need to disallow reentry of the processing loop **/
+		uint32 RecursionGuard;
+
+		/** Indicates we executed a return task, so break out of the processing loop. **/
+		bool QuitForReturn;
+
+		/** Indicates we executed a return task, so break out of the processing loop. **/
+		bool QuitForShutdown;
+
+		/** Event that this thread blocks on when it runs out of work. **/
+		FEvent*	StallRestartEvent;
+
+		FThreadTaskQueue()
+			: RecursionGuard(0)
+			, QuitForReturn(false)
+			, QuitForShutdown(false)
+			, StallRestartEvent(FPlatformProcess::GetSynchEventFromPool(false))
+		{
+
+		}
+
+		~FThreadTaskQueue()
+		{
+			FPlatformProcess::ReturnSynchEventToPool(StallRestartEvent);
+			StallRestartEvent = nullptr;
+		}
 	};
+	FThreadTaskQueue Queues[ENamedThreads::NumQueues];
+
+private:
+	FORCEINLINE FThreadTaskQueue& Queue(int32 QueueIndex)
+	{
+		assert(QueueIndex >= 0 && QueueIndex < ENamedThreads::NumQueues);
+		return Queues[QueueIndex];
+	}
+
+	FORCEINLINE const FThreadTaskQueue& Queue(int32 QueueIndex) const
+	{
+		assert(QueueIndex >= 0 && QueueIndex < ENamedThreads::NumQueues);
+		return Queues[QueueIndex];
+	}
 };

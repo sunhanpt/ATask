@@ -136,5 +136,8 @@
     <ClInclude Include="public\Runnable.h">
       <Filter>public\Thread</Filter>
     </ClInclude>
+    <ClInclude Include="public\SingleThreadEvent.h">
+      <Filter>public\Thread</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #pragma once;
-#include "ThreadSafeQueue.h"
+#include "LockFreeList.h"
 #include "Event.h"
 
 enum EEventPoolType
@@ -11,7 +11,7 @@ enum EEventPoolType
 	ManualReset
 };
 
-// 为了包含FEvent不被外界delete
+// 为了包含FEvent,保证Event不被外界delete
 class FSafeRecyclableEvent final : public FEvent
 {
 public:
@@ -66,18 +66,29 @@ public:
 	
 	FEvent* GetEventFromPool()
 	{
-		FEvent* Event = EventQueue.front();
-		EventQueue.pop();
-		return Event;
+		FEvent* Event = Pool.Pop();
+		if (!Event)
+		{
+			Event = FPlatformProcess::CreateSynchEvent((PoolType == EEventPoolType::ManualReset));
+		}
+
+		return new FSafeRecyclableEvent(Event);
 	}
 
-	void ReturnToPool()
+	void ReturnToPool(FEvent* Event)
 	{
-
+		assert(Event);
+		assert(Event->IsManualReset() == (PoolType == EEventPoolType::ManualReset));
+		FSafeRecyclableEvent* SafeEvent = (FSafeRecyclableEvent*)Event;
+		FEvent* Result = SafeEvent->InnerEvent;
+		delete SafeEvent;
+		assert(Result);
+		Result->Reset();
+		Pool.Push(Result);
 	}
 
 private:
-	FThreadSafeQueue EventQueue;
+	TLockFreePointerListUnordered<FEvent, PLATFORM_CACHE_LINE_SIZE> Pool;
 
 	FEventPool() = default;
 	~FEventPool() = default;
