@@ -10,6 +10,8 @@ using int8			= char;
 using int16			= short int;
 using uint16		= unsigned short int;
 
+#define MAX_uint32	((uint32) 0xffffffff)
+
 template<typename T32BITS, typename T64BITS, int PointerSize>
 struct SelectIntPointerType
 {

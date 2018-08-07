@@ -3,6 +3,7 @@
 #include "SingleThreadRunnable.h"
 #include "RunnableThread.h"
 #include "WindowsPlatformTLS.h"
+#include "Event.h"
 #include <vector>
 
 /**
@@ -130,7 +131,7 @@ public:
 		return this;
 	}
 
-private:
+protected:
 	ENamedThreads::Type				ThreadId;
 	uint32							PerThreadIDTLSSlot;
 	FThreadSafeCounter				IsStalled;
@@ -145,6 +146,54 @@ private:
 class FNamedTaskThread : public FTaskThreadBase
 {
 public:
+	// 运行task，直到被标记需要Quit。
+	virtual void ProcessTasksUntilQuit(int32 QueueIndex) override
+	{
+		assert(Queue(QueueIndex).StallRestartEvent); // started up.
+		Queue(QueueIndex).QuitForReturn = false;
+		assert(++Queue(QueueIndex).RecursionGuard == 1);
+		do 
+		{
+			ProcessTasksNamedThread(QueueIndex, FPlatformProcess::SupportsMultithreading());
+		} while (!Queue(QueueIndex).QuitForReturn && !Queue(QueueIndex).QuitForShutdown && FPlatformProcess::SupportsMultithreading());
+		assert(!--Queue(QueueIndex).RecursionGuard);
+	}
+
+	// 运行tasks，直到task为空也即idle。（在这个周期内，线程不会再次开启）
+	virtual void ProcessTaskUntilIdle(int32 QueueIndex) override
+	{
+		assert(Queue(QueueIndex).StallRestartEvent); // started up.
+		Queue(QueueIndex).QuitForReturn = false;
+		assert(++Queue(QueueIndex).RecursionGuard == 1);
+		ProcessTasksNamedThread(QueueIndex, false);
+		assert(!--Queue(QueueIndex).RecursionGuard);
+	}
+
+	void ProcessTasksNamedThread(int32 QueueIndex, bool bAllowStall)
+	{
+		while (!Queue(QueueIndex).QuitForReturn)
+		{
+			FBaseGraphTask* Task = Queue(QueueIndex).StallQueue.Pop(0, bAllowStall);
+			if (!Task)
+			{
+				if (bAllowStall)
+				{
+					Queue(QueueIndex).StallRestartEvent->Wait(MAX_uint32);
+					if (Queue(QueueIndex).QuitForShutdown)
+						return;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				Task->Execute(NewTasks, ENamedThreads::Type(ThreadId | (QueueIndex << ENamedThreads::QueueIndexShift)));
+			}
+		}
+	}
+
 	// TODO: 2018/8/7
 private:
 	struct FThreadTaskQueue 
