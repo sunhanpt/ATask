@@ -723,7 +723,7 @@ private:
 	{
 		int32 Result = -1;
 		UPTRINT Test = UPTRINT(Ptr);
-		if (Test)
+		if (Test) // 0表示当前位被占用，1表示未被占用
 		{
 			Result = 0;
 			while (!(Test & 1))

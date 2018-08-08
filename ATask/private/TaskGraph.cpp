@@ -194,7 +194,53 @@ public:
 		}
 	}
 
-	// TODO: 2018/8/7
+	virtual void EnqueueFromThisThread(int32 QueueIndex, FBaseGraphTask* Task) override
+	{
+		assert(Task && Queue(QueueIndex).StallRestartEvent);
+		uint32 PriIndex = ENamedThreads::GetTaskPriority(Task->ThreadToExecuteOn) ? 0 : 1;
+		int32 ThreadToStart = Queue(QueueIndex).StallQueue.Push(Task, PriIndex);
+		assert(ThreadToStart);
+	}
+
+	virtual bool EnqueueFromOtherThread(int32 QueueIndex, FBaseGraphTask* Task) override
+	{
+		assert(Task && Queue(QueueIndex).StallRestartEvent);
+
+		uint32 PriIndex = ENamedThreads::GetTaskPriority(Task->ThreadToExecuteOn) ? 0 : 1;
+		int32 ThreadToStart = Queue(QueueIndex).StallQueue.Push(Task, PriIndex);
+
+		if (ThreadToStart >= 0)
+		{
+			assert(ThreadToStart == 0);
+			Queue(QueueIndex).StallRestartEvent->Trigger();
+			return true;
+		}
+		return false;
+	}
+
+	virtual void RequestQuit(int32 QueueIndex)
+	{
+		if (!Queue(0).StallRestartEvent)
+			return;
+		if (QueueIndex == -1)
+		{
+			assert(Queue(0).StallRestartEvent && Queue(1).StallRestartEvent);
+			Queue(0).QuitForShutdown = true;
+			Queue(1).QuitForShutdown = true;
+			Queue(0).StallRestartEvent->Trigger();
+			Queue(1).StallRestartEvent->Trigger();
+		}
+		else
+		{
+			assert(Queue(QueueIndex).StallRestartEvent);
+			Queue(QueueIndex).QuitForReturn = true;
+		}
+	}
+
+	virtual bool IsProcessingTasks(int32 QueueIndex)
+	{
+		return !!Queue(QueueIndex).RecursionGuard;
+	}
 private:
 	struct FThreadTaskQueue 
 	{
