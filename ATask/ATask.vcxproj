@@ -25,6 +25,7 @@
     <ClCompile Include="private\TaskGraph.cpp" />
     <ClCompile Include="private\ThreadCoreGlobals.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />
+    <ClCompile Include="private\UnrealMemory.cpp" />
     <ClCompile Include="private\WindowsPlatformProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +39,7 @@
     <ClInclude Include="public\SingleThreadRunnable.h" />
     <ClInclude Include="public\ThreadCoreGlobals.h" />
     <ClInclude Include="public\TypeCompatibleBytes.h" />
+    <ClInclude Include="public\UnrealMemory.h" />
     <ClInclude Include="public\WindowsPlatformProcess.h" />
     <ClInclude Include="public\CoreTypes.h" />
     <ClInclude Include="public\CriticalSection.h" />

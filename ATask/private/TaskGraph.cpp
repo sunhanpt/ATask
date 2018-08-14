@@ -4,6 +4,7 @@
 #include "RunnableThread.h"
 #include "WindowsPlatformTLS.h"
 #include "Event.h"
+#include "CriticalSection.h"
 #include <vector>
 
 /**
@@ -11,6 +12,8 @@
 *	Helper structure to aggregate a few items related to the individual threads.
 **/
 class FTaskThreadBase;
+class FTaskGraphImplementation;
+static FTaskGraphImplementation* TaskGraphImplementationSingleton = nullptr;
 
 struct FWorkerThread
 {
@@ -65,7 +68,7 @@ public:
 	virtual void ProcessTasksUntilQuit(int32 QueueIndex) = 0;
 
 	// Used for named threads to start processing tasks until the thread is idle has been called.
-	virtual void ProcessTaskUntilIdle(int32 QueueIndex) { assert(0); }
+	virtual void ProcessTasksUntilIdle(int32 QueueIndex) { assert(0); }
 
 	// Queue a task, assuming that this thread is the same as the current thread.
 	// For named threads, these go directly into the private queue. 
@@ -100,7 +103,7 @@ public:
 
 	virtual void Tick() override
 	{
-		ProcessTaskUntilIdle(0);
+		ProcessTasksUntilIdle(0);
 	}
 
 	// FRunnable API
@@ -160,7 +163,7 @@ public:
 	}
 
 	// 运行tasks，直到task为空也即idle。（在这个周期内，线程不会再次开启）
-	virtual void ProcessTaskUntilIdle(int32 QueueIndex) override
+	virtual void ProcessTasksUntilIdle(int32 QueueIndex) override
 	{
 		assert(Queue(QueueIndex).StallRestartEvent); // started up.
 		Queue(QueueIndex).QuitForReturn = false;
@@ -288,3 +291,161 @@ private:
 		return Queues[QueueIndex];
 	}
 };
+
+/**
+*	FTaskThreadAnyThread
+*	A class for managing a worker threads.
+**/
+class FTaskThreadAnyThread : public FTaskThreadBase
+{
+	FTaskThreadAnyThread(int32 InPriorityIndex)
+		: PriorityIndex(InPriorityIndex)
+	{
+	}
+
+	virtual void ProcessTasksUntilQuit(int32 QueueIndex) override
+	{
+		//if (PriorityIndex != (ENamedThreads::BackgroundThreadPriority >> ENamedThreads::ThreadPriorityShift))
+		//{
+		//	FMemory::SetupTLSCachesOnCurrentThread();
+		//}
+		assert(!QueueIndex);
+		do 
+		{
+			ProcessTasks();
+		} while (!Queue.QuitForShutdown && FPlatformProcess::SupportsMultithreading());
+	}
+
+	virtual void ProcessTasksUntilIdle(int32 QueueIndex) override
+	{
+		if (!FPlatformProcess::SupportsMultithreading())
+		{
+			ProcessTasks();
+		}
+		else
+		{
+			assert(0);
+		}
+	}
+
+	virtual void RequestQuit(int32 QueueIndex)
+	{
+		assert(QueueIndex < 0);
+		assert(Queue.StallRestartEvent);
+		Queue.QuitForShutdown = true;
+		Queue.StallRestartEvent->Trigger();
+	}
+
+	virtual void WakeUp() final override
+	{
+		Queue.StallRestartEvent->Trigger();
+	}
+
+	void StallForTunning(bool Stall)
+	{
+		if (Stall)
+		{
+			Queue.StallForTuning.Lock();
+			Queue.bStallForTuning = true;
+		}
+		else
+		{
+			Queue.bStallForTuning = false;
+			Queue.StallForTuning.UnLock();
+		}
+	}
+
+	virtual bool IsProcessingTasks(int32 QueueIndex) override
+	{
+		assert(!QueueIndex);
+		return !!Queue.RecursionGuard;
+	}
+
+private:
+	FBaseGraphTask* FindWork();
+
+	void ProcessTasks()
+	{
+		++Queue.RecursionGuard;
+		bool bDidStall = false;
+		while (1)
+		{
+			FBaseGraphTask* Task = FindWork();
+			if (!Task)
+			{
+				if (FPlatformProcess::SupportsMultithreading())
+				{
+					Queue.StallRestartEvent->Wait(MAX_uint32);
+					bDidStall = true;
+				}
+
+				if (Queue.QuitForShutdown || !FPlatformProcess::SupportsMultithreading())
+				{
+					break;
+				}
+				continue;
+			}
+
+			// the Win scheduler is ill behaved and will sometimes let BG tasks run even when other tasks are ready....kick the scheduler between tasks
+			if (!bDidStall && PriorityIndex == (ENamedThreads::BackgroundThreadPriority >> ENamedThreads::ThreadPriorityShift))
+			{
+				FPlatformProcess::Sleep(0);
+			}
+			bDidStall = false;
+			Task->Execute(NewTasks, ENamedThreads::Type(ThreadId));
+		}
+		--Queue.RecursionGuard;
+	}
+
+private:
+	struct FThreadTaskQueue
+	{
+		FEvent* StallRestartEvent;
+		uint32	RecursionGuard;
+		bool	QuitForShutdown;
+		bool	bStallForTuning;
+		FCriticalSection StallForTuning;
+
+		FThreadTaskQueue()
+			: StallRestartEvent(FPlatformProcess::GetSynchEventFromPool(false))
+			, RecursionGuard(0)
+			, QuitForShutdown(false)
+			, bStallForTuning(false)
+		{
+
+		}
+
+		~FThreadTaskQueue()
+		{
+			FPlatformProcess::ReturnSynchEventToPool(StallRestartEvent);
+			StallRestartEvent = nullptr;
+		}
+	};
+	
+	FThreadTaskQueue Queue;
+
+	int32 PriorityIndex;
+};
+
+
+class FTaskGraphImplemention : public FTaskGraphInterface
+{
+public:
+	static FTaskGraphImplemention& Get()
+	{
+		return *TaskGraphImplementationSingleton;
+	}
+
+	FTaskGraphImplemention(int32)
+	{
+		// TODO:
+	}
+private:
+};
+
+
+FBaseGraphTask* FTaskThreadAnyThread::FindWork()
+{
+	return nullptr; // TODO: 完成FTaskGraphImplementation需要重新完善此函数。
+}
+

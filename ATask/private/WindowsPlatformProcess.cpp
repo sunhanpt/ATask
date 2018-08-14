@@ -50,3 +50,12 @@ FEvent* FWindowsPlatformProcess::CreateSynchEvent(bool bIsManualReset /* = false
 	}
 	return Event;
 }
+
+void FWindowsPlatformProcess::Sleep(float Secondes)
+{
+	uint32 Milliseconds = (uint32)(Secondes * 1000.0);
+	if (Milliseconds == 0)
+		::SwitchToThread();
+
+	::Sleep(Milliseconds);
+}

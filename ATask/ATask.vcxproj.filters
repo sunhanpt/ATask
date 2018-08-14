@@ -38,6 +38,9 @@
     <Filter Include="public\Core">
       <UniqueIdentifier>{56acdec6-0fa5-4590-a7ec-44c9626a578f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="private\Core">
+      <UniqueIdentifier>{c8c65686-09ed-470d-9378-29d078a2fc06}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -58,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="private\TaskGraph.cpp">
       <Filter>private\TaskGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="private\UnrealMemory.cpp">
+      <Filter>private\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +144,9 @@
     </ClInclude>
     <ClInclude Include="public\SingleThreadEvent.h">
       <Filter>public\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="public\UnrealMemory.h">
+      <Filter>public\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

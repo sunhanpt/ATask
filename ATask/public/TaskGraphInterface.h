@@ -227,7 +227,7 @@ protected:
 private:
 	friend class FNamedTaskThread;
 	friend class FTaskThreadBase;
-	friend class FTaskThreadAndyThread;
+	friend class FTaskThreadAnyThread;
 	friend class FGraphEvent;
 	friend class FTaskGraphImplementation;
 

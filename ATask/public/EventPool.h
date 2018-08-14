@@ -2,6 +2,9 @@
 #include "LockFreeList.h"
 #include "Event.h"
 
+// Event分为开启（有信号）和关闭(无信号）两个状态。手动开启Event用SetEvent，手动关闭用ResetEvent。处于无信号时，线程sleep。
+// 当设置成自动Event时，WaitForSingleObject接口会等待Event开启，开启之后，会自动把Event关闭。也就是说，手动的Event可以被多个线程监听
+// 自动的Event只能被一个线程监听。
 enum EEventPoolType
 {
 	/** Creates events that have their signaled state reset automatically. */
