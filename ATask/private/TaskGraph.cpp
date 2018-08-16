@@ -7,14 +7,18 @@
 #include "CriticalSection.h"
 #include <vector>
 
-/**
-*	FWorkerThread
-*	Helper structure to aggregate a few items related to the individual threads.
-**/
+
+#define CREATE_HIPRI_TASK_THREADS (1)
+#define CREATE_BACKGROUND_TASK_THREADS (1)
+
 class FTaskThreadBase;
 class FTaskGraphImplementation;
 static FTaskGraphImplementation* TaskGraphImplementationSingleton = nullptr;
 
+/**
+*	FWorkerThread
+*	Helper structure to aggregate a few items related to the individual threads.
+**/
 struct FWorkerThread
 {
 	FTaskThreadBase*		TaskGraphWorker;	// runnable
@@ -441,6 +445,74 @@ public:
 		// TODO:
 	}
 private:
+
+	FTaskThreadBase& Thread(int32 Index)
+	{
+		assert(Index >= 0 && Index < NumThreads);
+		assert(WorkerThreads[Index].TaskGraphWorker->GetThreadId() == Index);
+		return *WorkerThreads[Index].TaskGraphWorker;
+	}
+
+	ENamedThreads::Type GetCurrentThread()
+	{
+		ENamedThreads::Type CurrentThreadIfKnown = ENamedThreads::AnyThread;
+		FWorkerThread* TLSPointer = (FWorkerThread*)FPlatformTLS::GetTlsValueUE(PerThreadIDTLSSlot);
+		if (TLSPointer)
+		{
+			assert(TLSPointer - WorkerThreads >= 0 && TLSPointer - WorkerThreads < NumThreads);
+			int32 ThreadIndex = TLSPointer - WorkerThreads;
+			assert(Thread(ThreadIndex).GetThreadId() == ThreadIndex);
+			if (ThreadIndex < NumNamedThreads)
+			{
+				CurrentThreadIfKnown = ENamedThreads::Type(ThreadIndex);
+			}
+			else
+			{
+				int32 Priority = (ThreadIndex - NumNamedThreads) / NumTaskThreadsPerSet;
+				CurrentThreadIfKnown = ENamedThreads::SetPriorities(ENamedThreads::Type(ThreadIndex), Priority, false);
+			}
+		}
+		return CurrentThreadIfKnown;
+	}
+
+	int32 ThreadIndexToPriorityIndex(int32 ThreadIndex)
+	{
+		assert(ThreadIndex >= NumNamedThreads && ThreadIndex < NumThreads);
+		int32 Result = (ThreadIndex - NumNamedThreads) / NumTaskThreadsPerSet;
+		assert(Result >= 0 && Result < NumTaskThreadSets);
+		return Result;
+	}
+
+	enum
+	{
+		/** Compile time maximum number of threads. Didn't really need to be a compile time constant, but task thread are limited by MAX_LOCK_FREE_LINKS_AS_BITS **/
+		// 这里的26是跟LockFreeList中指针所占的位数有关的，指针占了26位。
+		MAX_THREADS = 26 * (CREATE_HIPRI_TASK_THREADS + CREATE_BACKGROUND_TASK_THREADS + 1) + ENamedThreads::ActualRenderingThread + 1,
+		MAX_THREAD_PRIORITIES = 3
+	};
+
+	FWorkerThread		WorkerThreads[MAX_THREADS];
+	int32				NumThreads;					/** Number of threads actually in use. **/
+	int32				NumNamedThreads;			/** Number of named threads actually in use. **/
+	int32				NumTaskThreadSets;			/** Number of tasks thread sets for priority **/
+	int32				NumTaskThreadsPerSet;		/** Number of tasks threads per priority set **/
+	bool				bCreatedHiPriorityThreads;
+	bool				bCreatedBackgroundPriorityThreads;
+
+	/**
+	* "External Threads" are not created, the thread is created elsewhere and makes an explicit call to run
+	* Here all of the named threads are external but that need not be the case.
+	* All unnamed threads must be internal
+	**/
+	ENamedThreads::Type LastExternalThread;
+	FThreadSafeCounter	ReentrancyCheck;
+	/** Index of TLS slot for FWorkerThread* pointer. **/
+	uint32				PerThreadIDTLSSlot;
+
+	/** Array of callbacks to call before shutdown. **/
+	std::vector<std::function<void()> > ShutdownCallbacks;
+
+	FStallingTaskQueue<FBaseGraphTask, PLATFORM_CACHE_LINE_SIZE, 2>	IncomingAnyThreadTasks[MAX_THREAD_PRIORITIES];
 };
 
 
