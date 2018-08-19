@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "CoreTypes.h"
 #include "WindowsPlatform.h"
 
 template<int32 Size, uint32 Alignment>

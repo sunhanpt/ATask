@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.h"
+#include "CoreTypes.h"
 #include "WindowsPlatform.h"
 #include <intrin.h>
 

@@ -7,6 +7,7 @@
 #include "WindowsPlatform.h"
 #include "ThreadSafeCounter.h"
 #include "LockFreeList.h"
+#include "TypeCompatibleBytes.h"
 
 namespace ENamedThreads
 {

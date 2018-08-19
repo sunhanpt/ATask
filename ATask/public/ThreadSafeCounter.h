@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "CoreTypes.h"
 #include "WindowsPlatformAtomics.h"
 
 class FThreadSafeCounter

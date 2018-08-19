@@ -1,9 +1,12 @@
 #pragma once
-#include "Types.h"
+#include "CoreTypes.h"
 #include "AlignmentTemplates.h"
 #include "WindowsPlatform.h"
 #include "WindowsPlatformAtomics.h"
 #include "WindowsPlatformProcess.h"
+#include "ThreadSafeCounter.h"
+#include "Template.h"
+
 #include <cassert>
 #include <functional>
 #include <vector>
@@ -788,7 +791,7 @@ public:
 	*
 	*	@param Output The array to hold the returned items. Must be empty.
 	*/
-	void PopAll(TArray<T *>& Output)
+	void PopAll(std::vector<T *>& Output)
 	{
 		FLockFreePointerListLIFOBase<T, TPaddingForCacheContention>::PopAll(Output);
 	}
@@ -847,7 +850,7 @@ public:
 	*
 	*	@param Output The array to hold the returned items. Must be empty.
 	*/
-	void PopAll(TArray<T *>& Output)
+	void PopAll(std::vector<T *>& Output)
 	{
 		FLockFreePointerFIFOBase<T, TPaddingForCacheContention>::PopAll(Output);
 	}
@@ -895,7 +898,7 @@ public:
 	*
 	*	@param Output The array to hold the returned items. Must be empty.
 	*/
-	void PopAllAndClose(TArray<T *>& Output)
+	void PopAllAndClose(std::vector<T *>& Output)
 	{
 		auto CheckOpenAndClose = [](uint64 State) -> uint64
 		{

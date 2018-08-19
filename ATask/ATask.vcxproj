@@ -22,6 +22,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="private\FEventWin.cpp" />
     <ClCompile Include="private\FQueuedThreadPool.cpp" />
+    <ClCompile Include="private\LockFreeList.cpp" />
     <ClCompile Include="private\TaskGraph.cpp" />
     <ClCompile Include="private\ThreadCoreGlobals.cpp" />
     <ClCompile Include="private\ThreadManager.cpp" />

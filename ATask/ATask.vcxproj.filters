@@ -41,6 +41,9 @@
     <Filter Include="private\Core">
       <UniqueIdentifier>{c8c65686-09ed-470d-9378-29d078a2fc06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="private\Container">
+      <UniqueIdentifier>{5df50e5a-ec6c-4fdc-af75-3adc173b61c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="private\UnrealMemory.cpp">
       <Filter>private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="private\LockFreeList.cpp">
+      <Filter>private\Container</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

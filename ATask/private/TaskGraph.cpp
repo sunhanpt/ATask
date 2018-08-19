@@ -444,6 +444,16 @@ public:
 	{
 		// TODO:
 	}
+
+	virtual ~FTaskGraphImplemention()
+	{
+
+	}
+
+	virtual void QueueTask(class FBaseGraphTask* Task, ENamedThreads::Type ThreadToExecuteOn, ENamedThreads::Type CurrentThreadIfKnown /* = ENamedThreads::AnyThread */)
+	{
+
+	}
 private:
 
 	FTaskThreadBase& Thread(int32 Index)
