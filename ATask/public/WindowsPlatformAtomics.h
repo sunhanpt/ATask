@@ -23,7 +23,7 @@ struct FWindowsPlatformAtomics
 
 	static __forceinline int32 InterlockedIncrement(volatile int32* Value)
 	{
-		return (int32)_InterlockedIncrement((long*)Value);
+		return (int32)_InterlockedIncrement((volatile long*)Value);
 	}
 
 	static __forceinline int64 InterlockedIncrement(volatile int64* Value)
